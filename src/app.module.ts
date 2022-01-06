@@ -4,6 +4,7 @@ import { SequelizeModule } from '@nestjs/sequelize';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { UsersModule } from './users/users.module';
 import configDatabase from './config/database.config';
 
 @Module({
@@ -12,7 +13,8 @@ import configDatabase from './config/database.config';
 		SequelizeModule.forRootAsync({
 			imports: [ConfigModule],
 			useFactory: configDatabase
-		})
+		}),
+		UsersModule
 	],
 	controllers: [AppController],
 	providers: [AppService]
