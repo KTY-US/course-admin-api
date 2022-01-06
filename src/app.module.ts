@@ -5,6 +5,9 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
+import { CoursesModule } from './courses/courses.module';
+import { AdminsModule } from './admins/admins.module';
+import { AuthModule } from './auth/auth.module';
 import configDatabase from './config/database.config';
 
 @Module({
@@ -14,7 +17,10 @@ import configDatabase from './config/database.config';
 			imports: [ConfigModule],
 			useFactory: configDatabase
 		}),
-		UsersModule
+		UsersModule,
+		CoursesModule,
+		AdminsModule,
+		AuthModule
 	],
 	controllers: [AppController],
 	providers: [AppService]
