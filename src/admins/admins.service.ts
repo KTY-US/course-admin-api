@@ -34,7 +34,9 @@ export class AdminsService {
 	 * Ham lấy danh sách admin account
 	 * @returns
 	 */
-	async getAllAdminAccounts(sortMode: string): Promise<Admin[]> {
+	async getAllAdminAccounts(accountId: string, sortMode?: string): Promise<Admin[]> {
+		// const account = await this.adminModel.findOne({ where: { id: accountId } });
+		// if (account && account?.role === 'manager') {
 		let myOrder = sequelize.literal('username ASC');
 
 		if (sortMode === 'time-asc') {
@@ -47,6 +49,9 @@ export class AdminsService {
 			order: myOrder
 		});
 		return accounts;
+		// } else {
+		// 	throw new BadRequestException('Do not have permission!');
+		// }
 	}
 
 	async getAdminAccountDetail(accountId: string): Promise<Admin> {
