@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
 import { Column, Model, Table } from 'sequelize-typescript';
-
+import bcrypt from 'bcrypt';
 @Table
 export class Admin extends Model {
 	@Column({
@@ -19,19 +19,23 @@ export class Admin extends Model {
 
 	@Column({
 		defaultValue: 'Pass@12345',
-		allowNull: false
+		allowNull: false,
+		set(value: string) {
+			const hash = bcrypt.hashSync(value, 10);
+			this.setDataValue('password', hash);
+		}
 	})
 	password: string;
 
 	@Column({
-		defaultValue: 'First',
-		allowNull: false
+		defaultValue: 'Admin',
+		allowNull: true
 	})
 	firstName: string;
 
 	@Column({
 		defaultValue: 'Last',
-		allowNull: false
+		allowNull: true
 	})
 	lastName: string;
 
