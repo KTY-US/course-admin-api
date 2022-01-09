@@ -42,9 +42,9 @@ export class UsersService {
 	 * @param userCode
 	 * @returns trả về true nếu đã được sử dụng
 	 */
-	async checkExistedUserCode(userId: string, userCode: string): Promise<ICheckExistedResult> {
-		if (userCode !== '') {
-			const user = await this.userModal.findOne({ where: { userCode } });
+	async checkExistedUserCode(userId: string, code: string): Promise<ICheckExistedResult> {
+		if (code !== '') {
+			const user = await this.userModal.findOne({ where: { code } });
 
 			if (user) {
 				if (user.id !== userId) {
@@ -78,10 +78,11 @@ export class UsersService {
 		if (user) {
 			if (user.userCode !== newCode) {
 				await user.update({ userCode: newCode });
+				return false;
 			}
 			return true;
 		} else {
-			return false;
+			throw new NotFoundException('User does not exist!');
 		}
 	}
 

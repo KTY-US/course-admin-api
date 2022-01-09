@@ -9,7 +9,7 @@ import { AdminsService } from './admins.service';
 export class AdminsController {
 	constructor(private readonly adminsService: AdminsService) {}
 
-	@Get('/all/:accountId')
+	@Get('all/:accountId')
 	async getAllAdminAccounts(
 		@Param('accountId') accountId: string,
 		@Query('sortMode') sortMode?: string
@@ -21,7 +21,7 @@ export class AdminsController {
 		}
 	}
 
-	@Get('/account-detail/:accountId')
+	@Get('account-detail/:accountId')
 	async getAdminAccountDetail(
 		@Param('accountId') accountId: string
 		// @Query('watchAccountId') watchAccountId: string
@@ -33,7 +33,7 @@ export class AdminsController {
 		}
 	}
 
-	@Get('/check-username')
+	@Get('check-username')
 	async checkUsername(@Req() req: Request): Promise<boolean> {
 		try {
 			const { username } = req.body;
@@ -43,7 +43,7 @@ export class AdminsController {
 		}
 	}
 
-	@Post('/create')
+	@Post('create')
 	async createNewAdminAccount(@Body() data: AdminCreateDto): Promise<void> {
 		try {
 			return this.adminsService.createAdminAccount(data);
