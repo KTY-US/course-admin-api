@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import sequelize from 'sequelize';
 
@@ -35,8 +35,8 @@ export class AdminsService {
 	 * @returns
 	 */
 	async getAllAdminAccounts(accountId: string, sortMode?: string): Promise<Admin[]> {
-		// const account = await this.adminModel.findOne({ where: { id: accountId } });
-		// if (account && account?.role === 'manager') {
+		// const check = this.checkManager(accountId);
+		// if (check) {
 		let myOrder = sequelize.literal('username ASC');
 
 		if (sortMode === 'time-asc') {
@@ -44,6 +44,7 @@ export class AdminsService {
 		} else if (sortMode === 'time-desc') {
 			myOrder = sequelize.literal('createAt DESC');
 		}
+
 		const accounts = this.adminModel.findAll({
 			attributes: { exclude: ['updateAt'] },
 			order: myOrder
@@ -54,6 +55,11 @@ export class AdminsService {
 		// }
 	}
 
+	/**
+	 * Lấy thông tin chi tiết tài khoản
+	 * @param accountId
+	 * @returns
+	 */
 	async getAdminAccountDetail(accountId: string): Promise<Admin> {
 		const account = await this.adminModel.findOne({
 			where: { id: accountId },
@@ -62,5 +68,22 @@ export class AdminsService {
 
 		if (account) return account;
 		throw new BadRequestException('Account does not exist!');
+	}
+
+	/**
+	 * Kiểm tra tài khoản là manager
+	 * @param accountId
+	 * @returns
+	 */
+	async checkManager(accountId: string): Promise<boolean> {
+		const account = await this.adminModel.findOne({ where: { id: accountId } });
+
+		if (account) {
+			if (account.role === 'manager') return true;
+			else {
+				return false;
+			}
+		}
+		throw new NotFoundException('Admin account does not exist!');
 	}
 }
