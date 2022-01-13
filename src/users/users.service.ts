@@ -25,7 +25,7 @@ export class UsersService {
 	 * @returns
 	 */
 	async getAllUsers(sortMode?: string): Promise<User[]> {
-		let myOrder = sequelize.literal('username ASC');
+		let myOrder = sequelize.literal('email ASC');
 
 		if (sortMode === 'time-asc') {
 			myOrder = sequelize.literal('createAt ASC');
