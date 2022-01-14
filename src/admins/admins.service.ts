@@ -86,4 +86,18 @@ export class AdminsService {
 		}
 		throw new NotFoundException('Admin account does not exist!');
 	}
+
+	/**
+	 * Kiểm tra tài khoản là manager
+	 * @param accountId
+	 * @returns
+	 */
+	async checkIsAdmin(accountId: string): Promise<boolean> {
+		const account = await this.adminModel.findOne({ where: { id: accountId } });
+
+		if (account) {
+			return true;
+		}
+		throw new NotFoundException('Admin account does not exist!');
+	}
 }
