@@ -26,7 +26,7 @@ export class CoursesService {
 		rowsPerPage: number,
 		sortMode?: string
 	): Promise<{ courses: Course[]; total: number }> {
-		let myOrder = sequelize.literal('createdAt DESC');
+		let myOrder = sequelize.literal('courseName ASC');
 
 		if (sortMode === 'time-asc') {
 			myOrder = sequelize.literal('createdAt ASC');
