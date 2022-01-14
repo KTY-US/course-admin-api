@@ -11,8 +11,13 @@ export class CoursesService {
 		private courseModel: typeof Course
 	) {}
 
-	async getAllCourses(sortMode?: string): Promise<Course[]> {
-		let myOrder = sequelize.literal('courseName ASC');
+	async getAllCourses(
+		accountId: string,
+		page: number,
+		rowsPerPage: number,
+		sortMode?: string
+	): Promise<{ courses: Course[]; total: number }> {
+		let myOrder = sequelize.literal('createAt DESC');
 
 		if (sortMode === 'time-asc') {
 			myOrder = sequelize.literal('createAt ASC');
@@ -20,7 +25,15 @@ export class CoursesService {
 			myOrder = sequelize.literal('createAt DESC');
 		}
 
-		return await this.courseModel.findAll({ attributes: { exclude: ['updateAt'] }, order: myOrder });
+		let courses = await this.courseModel.findAll({ attributes: { exclude: ['updateAt'] }, order: myOrder });
+
+		const total = courses.length;
+		const startIndex = (page - 1) * rowsPerPage;
+		if (startIndex < total && rowsPerPage > 0) {
+			courses = courses.slice((page - 1) * rowsPerPage, page * rowsPerPage);
+		}
+
+		return { courses, total };
 	}
 
 	async getCourseDetail(courseId: string): Promise<Course> {
