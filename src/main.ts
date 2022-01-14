@@ -5,13 +5,11 @@ import { AppModule } from './app.module';
 import 'core-js/proposals/reflect-metadata';
 
 async function bootstrap(): Promise<void> {
-	const port = process.env.PORT || 5000;
+	const port = process.env.PORT || 6000;
 	const app = await NestFactory.create(AppModule);
 	// const allowedOrigins = [
 	// 	'http://localhost:3000',
-	// 	'https://course-app-midterm.netlify.app',
-	// 	'https://course-app-btn01.netlify.app',
-	// 	'https://course-app-btn02.netlify.app'
+	// 	'https://course-admin-app.netlify.app'
 	// ];
 	// app.enableCors({
 	// 	origin: function (origin, callback) {
