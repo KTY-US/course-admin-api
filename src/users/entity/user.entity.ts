@@ -43,7 +43,7 @@ export class User extends Model {
 	lastName: string;
 
 	@Column({
-		type: DataTypes.ENUM('active', 'inactive'),
+		type: DataTypes.ENUM('active', 'inactive', 'blocked', 'reset_password'),
 		defaultValue: 'inactive',
 		allowNull: false
 	})
