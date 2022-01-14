@@ -92,4 +92,20 @@ export class CoursesService {
 		}
 		throw new NotFoundException('Course does not exist!');
 	}
+
+	/**
+	 * Ham doc thong tin chi tiet mot khoa hoc
+	 * @param courseId
+	 * @returns
+	 */
+	async deleteCourse(courseId: string): Promise<void> {
+		const course = await this.courseModel.findOne({
+			where: { id: courseId }
+		});
+
+		if (course) {
+			course.destroy();
+		}
+		throw new NotFoundException('Course does not exist!');
+	}
 }

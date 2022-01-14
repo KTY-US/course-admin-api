@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CoursesService } from './courses.service';
 import { Course } from './entity/course.entity';
@@ -24,9 +24,19 @@ export class CoursesController {
 
 	@Get(':id')
 	// @UseGuards(AuthGuard('jwt'))
-	async getCourseByIdAndCode(@Param('id') id: string): Promise<Course> {
+	async getCourse(@Param('id') id: string): Promise<Course> {
 		try {
 			return this.coursesService.getCourseDetail(id);
+		} catch (error) {
+			throw new Error(error.message);
+		}
+	}
+
+	@Delete(':id')
+	// @UseGuards(AuthGuard('jwt'))
+	async deleteCourse(@Param('id') id: string): Promise<void> {
+		try {
+			return this.coursesService.deleteCourse(id);
 		} catch (error) {
 			throw new Error(error.message);
 		}
