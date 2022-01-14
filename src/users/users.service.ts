@@ -28,12 +28,12 @@ export class UsersService {
 		let myOrder = sequelize.literal('email ASC');
 
 		if (sortMode === 'time-asc') {
-			myOrder = sequelize.literal('createAt ASC');
+			myOrder = sequelize.literal('createdAt ASC');
 		} else if (sortMode === 'time-desc') {
-			myOrder = sequelize.literal('createAt DESC');
+			myOrder = sequelize.literal('createdAt DESC');
 		}
 
-		return await this.userModal.findAll({ attributes: { exclude: ['updateAt'] }, order: myOrder });
+		return await this.userModal.findAll({ attributes: { exclude: ['updatedAt'] }, order: myOrder });
 	}
 
 	/**
@@ -63,7 +63,7 @@ export class UsersService {
 	 * @returns
 	 */
 	async getUserDetail(userId: string): Promise<User> {
-		return await this.userModal.findOne({ where: { id: userId }, attributes: { exclude: ['updateAt'] } });
+		return await this.userModal.findOne({ where: { id: userId }, attributes: { exclude: ['updatedAt'] } });
 	}
 
 	/**

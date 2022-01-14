@@ -41,7 +41,7 @@ export class Admin extends Model {
 
 	@Column({
 		type: DataTypes.ENUM('admin', 'manager'),
-		defaultValue: 'inactive',
+		defaultValue: 'admin',
 		allowNull: false
 	})
 	role: string;
