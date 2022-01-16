@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import sequelize from 'sequelize';
+import sequelize, { Sequelize } from 'sequelize';
 
 import { User } from './entity/user.entity';
 
@@ -24,8 +24,15 @@ export class UsersService {
 	 * @param sortMode
 	 * @returns
 	 */
-	async getAllUsers(page: number, rowsPerPage: number, sortMode?: string): Promise<{ users: User[]; total: number }> {
+	async getAllUsers(
+		page: number,
+		rowsPerPage: number,
+		sortMode?: string,
+		searchString?: string
+	): Promise<{ users: User[]; total: number }> {
 		let myOrder = sequelize.literal('email ASC');
+
+		console.log(searchString);
 
 		if (sortMode === 'time-asc') {
 			myOrder = sequelize.literal('createdAt ASC');
@@ -33,12 +40,34 @@ export class UsersService {
 			myOrder = sequelize.literal('createdAt DESC');
 		}
 
-		let users = await this.userModal.findAll({ attributes: { exclude: ['updatedAt'] }, order: myOrder });
+		let users: User[];
+
+		try {
+			if (searchString !== '') {
+				const decodedSearch = decodeURIComponent(searchString);
+				users = await this.userModal.findAll({
+					where: {
+						$or: [{ firstName: decodedSearch }, { lastName: decodedSearch }, { email: decodedSearch }]
+					},
+					attributes: { exclude: ['updatedAt'] },
+					order: myOrder
+				});
+			} else {
+				users = await this.userModal.findAll({
+					attributes: { exclude: ['updatedAt'] },
+					order: myOrder
+				});
+			}
+		} catch {
+			users = [];
+		}
+
 		const total = users.length;
 		const startIndex = (page - 1) * rowsPerPage;
 		if (startIndex < total && rowsPerPage > 0) {
 			users = users.slice((page - 1) * rowsPerPage, page * rowsPerPage);
 		}
+
 		return { users, total };
 	}
 

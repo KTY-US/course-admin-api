@@ -10,10 +10,12 @@ export class UsersController {
 	getAllCourses(
 		@Query('page') page: string,
 		@Query('rowsPerPage') rowsPerPage: string,
-		@Query('sortMode') sortMode: string
+		@Query('sortMode') sortMode: string,
+		@Query('search') search: string
 	): Promise<{ users: User[]; total: number }> {
 		try {
-			return this.usersService.getAllUsers(+page, +rowsPerPage, sortMode);
+			console.log(search);
+			return this.usersService.getAllUsers(+page, +rowsPerPage, sortMode, search);
 		} catch (error) {
 			throw new Error(error.message);
 		}
