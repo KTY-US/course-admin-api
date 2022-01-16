@@ -12,6 +12,6 @@ export class AdminCreateDto {
 	// @IsEnum(ENUM('admin', 'manager'))
 	// role: string;
 
-	firstName: string;
-	lastName: string;
+	// firstName: string;
+	// lastName: string;
 }
