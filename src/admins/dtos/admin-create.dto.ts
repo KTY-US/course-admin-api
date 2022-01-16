@@ -1,6 +1,5 @@
 import { REGEX, MESSAGES } from './../../utils/app.utils';
-import { IsEnum, IsNotEmpty, Length, Matches } from 'class-validator';
-import { ENUM } from 'sequelize';
+import { IsNotEmpty, Length, Matches } from 'class-validator';
 
 export class AdminCreateDto {
 	@IsNotEmpty()
@@ -12,6 +11,6 @@ export class AdminCreateDto {
 	// @IsEnum(ENUM('admin', 'manager'))
 	// role: string;
 
-	// firstName: string;
-	// lastName: string;
+	firstName: string;
+	lastName: string;
 }

@@ -45,7 +45,7 @@ export class AdminsController {
 	}
 
 	@Post('create')
-	// @UseGuards(AuthGuard('jwt'))
+	@UseGuards(AuthGuard('jwt'))
 	@UsePipes(ValidationPipe)
 	async createNewAdminAccount(@Body() data: AdminCreateDto): Promise<void> {
 		try {
