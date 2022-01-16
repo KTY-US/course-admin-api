@@ -19,11 +19,7 @@ export class Admin extends Model {
 
 	@Column({
 		defaultValue: 'Pass@12345',
-		allowNull: false,
-		set(value: string) {
-			const hash = bcrypt.hashSync(value, 10);
-			this.setDataValue('password', hash);
-		}
+		allowNull: false
 	})
 	password: string;
 
@@ -41,7 +37,7 @@ export class Admin extends Model {
 
 	@Column({
 		type: DataTypes.ENUM('admin', 'manager'),
-		defaultValue: 'inactive',
+		defaultValue: 'admin',
 		allowNull: false
 	})
 	role: string;

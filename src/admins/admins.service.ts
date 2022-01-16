@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import sequelize from 'sequelize';
+import * as bcrypt from 'bcrypt';
 
 import { AdminCreateDto } from './dtos/admin-create.dto';
 import { Admin } from './entity/admin.entity';
@@ -17,7 +18,20 @@ export class AdminsService {
 	 * @param data
 	 */
 	async createAdminAccount(data: AdminCreateDto): Promise<void> {
-		await this.adminModel.create(data);
+		if (data.firstName.length === 0) {
+			data.firstName = 'Admin';
+		}
+		if (data.lastName.length === 0) {
+			data.lastName = 'Last';
+		}
+		const hashedPassword = bcrypt.hashSync('Pass@12345', 12);
+
+		await this.adminModel.create({
+			username: data.username,
+			firstName: data.firstName,
+			lastName: data.lastName,
+			password: hashedPassword
+		});
 	}
 
 	async checkExistedUsername(username: string): Promise<boolean> {

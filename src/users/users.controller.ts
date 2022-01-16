@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Param, Put, Query } from '@nestjs/common';
-import { User } from './entity/user.entity';
+import { Body, Controller, Get, Param, Put, Query, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 
+import { User } from './entity/user.entity';
 import { UsersService, ICheckExistedResult } from './users.service';
 
 @Controller('users')
@@ -8,6 +9,7 @@ export class UsersController {
 	constructor(private readonly usersService: UsersService) {}
 
 	@Get('all')
+	@UseGuards(AuthGuard('jwt'))
 	async getAllUsers(@Query('sortMode') sortMode: string): Promise<User[]> {
 		try {
 			return this.usersService.getAllUsers(sortMode);
@@ -17,6 +19,7 @@ export class UsersController {
 	}
 
 	@Get(':id')
+	@UseGuards(AuthGuard('jwt'))
 	async getUserDetails(@Param('id') userId: string): Promise<User> {
 		try {
 			return this.usersService.getUserDetail(userId);
@@ -26,6 +29,7 @@ export class UsersController {
 	}
 
 	@Get('check-code/:id')
+	@UseGuards(AuthGuard('jwt'))
 	async checkExistedUserCode(@Param('id') userId: string, @Body('code') code: string): Promise<ICheckExistedResult> {
 		try {
 			return this.usersService.checkExistedUserCode(userId, code);
@@ -35,6 +39,7 @@ export class UsersController {
 	}
 
 	@Put('change-code/:id')
+	@UseGuards(AuthGuard('jwt'))
 	async changeUserCode(@Param('id') userId: string, @Body('newCode') newCode: string): Promise<boolean> {
 		try {
 			return this.usersService.changeUserCode(userId, newCode);
@@ -44,6 +49,7 @@ export class UsersController {
 	}
 
 	@Put('change-lock-status/:id')
+	@UseGuards(AuthGuard('jwt'))
 	async changeUserLockStatus(@Param('id') userId: string): Promise<boolean> {
 		try {
 			return this.usersService.changeUserLockStatus(userId);

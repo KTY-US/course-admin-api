@@ -3,5 +3,6 @@ export class AuthDto {
 	username: string;
 	firstName: string;
 	lastName: string;
+	role: string;
 	token: string;
 }
