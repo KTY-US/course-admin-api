@@ -22,6 +22,7 @@ export class AuthController {
 	}
 
 	@Post('changePassword/:userId')
+	@UseGuards(AuthGuard('jwt'))
 	@UsePipes(ValidationPipe)
 	async changePassword2(@Body() passwordForm: ChangePasswordDto, @Param('userId') userId: string): Promise<void> {
 		try {
