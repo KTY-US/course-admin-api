@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Put, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Put, Query, Post } from '@nestjs/common';
 import { User } from './entity/user.entity';
 import { UsersService, ICheckExistedResult } from './users.service';
 
@@ -28,7 +28,7 @@ export class UsersController {
 		}
 	}
 
-	@Get('check-code/:id')
+	@Post('check-code/:id')
 	async checkExistedUserCode(@Param('id') userId: string, @Body('code') code: string): Promise<ICheckExistedResult> {
 		try {
 			return this.usersService.checkExistedUserCode(userId, code);

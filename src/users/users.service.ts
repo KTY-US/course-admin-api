@@ -50,7 +50,7 @@ export class UsersService {
 	 */
 	async checkExistedUserCode(userId: string, code: string): Promise<ICheckExistedResult> {
 		if (code !== '') {
-			const user = await this.userModal.findOne({ where: { code } });
+			const user = await this.userModal.findOne({ where: { userCode: code } });
 
 			if (user) {
 				if (user.id !== userId) {
