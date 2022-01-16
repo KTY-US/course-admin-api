@@ -24,16 +24,22 @@ export class UsersService {
 	 * @param sortMode
 	 * @returns
 	 */
-	async getAllUsers(sortMode?: string): Promise<User[]> {
+	async getAllUsers(page: number, rowsPerPage: number, sortMode?: string): Promise<{ users: User[]; total: number }> {
 		let myOrder = sequelize.literal('email ASC');
 
 		if (sortMode === 'time-asc') {
-			myOrder = sequelize.literal('createAt ASC');
+			myOrder = sequelize.literal('createdAt ASC');
 		} else if (sortMode === 'time-desc') {
-			myOrder = sequelize.literal('createAt DESC');
+			myOrder = sequelize.literal('createdAt DESC');
 		}
 
-		return await this.userModal.findAll({ attributes: { exclude: ['updateAt'] }, order: myOrder });
+		let users = await this.userModal.findAll({ attributes: { exclude: ['updatedAt'] }, order: myOrder });
+		const total = users.length;
+		const startIndex = (page - 1) * rowsPerPage;
+		if (startIndex < total && rowsPerPage > 0) {
+			users = users.slice((page - 1) * rowsPerPage, page * rowsPerPage);
+		}
+		return { users, total };
 	}
 
 	/**
@@ -63,7 +69,7 @@ export class UsersService {
 	 * @returns
 	 */
 	async getUserDetail(userId: string): Promise<User> {
-		return await this.userModal.findOne({ where: { id: userId }, attributes: { exclude: ['updateAt'] } });
+		return await this.userModal.findOne({ where: { id: userId }, attributes: { exclude: ['updatedAt'] } });
 	}
 
 	/**

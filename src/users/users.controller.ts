@@ -1,16 +1,19 @@
 import { Body, Controller, Get, Param, Put, Query } from '@nestjs/common';
 import { User } from './entity/user.entity';
-
 import { UsersService, ICheckExistedResult } from './users.service';
 
 @Controller('users')
 export class UsersController {
 	constructor(private readonly usersService: UsersService) {}
 
-	@Get('all')
-	async getAllUsers(@Query('sortMode') sortMode: string): Promise<User[]> {
+	@Get()
+	getAllCourses(
+		@Query('page') page: string,
+		@Query('rowsPerPage') rowsPerPage: string,
+		@Query('sortMode') sortMode: string
+	): Promise<{ users: User[]; total: number }> {
 		try {
-			return this.usersService.getAllUsers(sortMode);
+			return this.usersService.getAllUsers(+page, +rowsPerPage, sortMode);
 		} catch (error) {
 			throw new Error(error.message);
 		}
