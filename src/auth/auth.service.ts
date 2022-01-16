@@ -11,6 +11,7 @@ import { UserLoginDto } from './dtos/signin.dto';
 export class AuthService {
 	constructor(
 		@InjectModel(Admin)
+		private adminModel: typeof Admin,
 		private readonly jwtService: JwtService
 	) {}
 	/**
@@ -42,7 +43,7 @@ export class AuthService {
 	 */
 	async signIn(userLogin: UserLoginDto): Promise<AuthDto> {
 		const user = await Admin.findOne({
-			where: { email: userLogin.username },
+			where: { username: userLogin.username },
 			attributes: { exclude: ['createdAt', 'updatedAt'] }
 		});
 
@@ -53,7 +54,8 @@ export class AuthService {
 			username: user.username,
 			firstName: user.firstName,
 			lastName: user.lastName,
-			token
+			role: user.role,
+			token: token
 		};
 	}
 }

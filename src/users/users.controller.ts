@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Put, Query } from '@nestjs/common';
-import { User } from './entity/user.entity';
 
+import { User } from './entity/user.entity';
 import { UsersService, ICheckExistedResult } from './users.service';
 
 @Controller('users')
