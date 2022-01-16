@@ -8,10 +8,10 @@ export class AdminCreateDto {
 	@Matches(REGEX.USERNAME_RULE, { message: MESSAGES.USERNAME_RULE_MESSAGE })
 	username: string;
 
-	@IsNotEmpty()
-	@IsEnum(ENUM('admin', 'manager'))
-	role: string;
+	// @IsNotEmpty()
+	// @IsEnum(ENUM('admin', 'manager'))
+	// role: string;
 
-	fullName: string;
+	firstName: string;
 	lastName: string;
 }
