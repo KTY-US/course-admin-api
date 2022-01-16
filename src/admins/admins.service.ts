@@ -17,6 +17,12 @@ export class AdminsService {
 	 * @param data
 	 */
 	async createAdminAccount(data: AdminCreateDto): Promise<void> {
+		if (data.firstName.length === 0) {
+			data.firstName = 'Admin';
+		}
+		if (data.lastName.length === 0) {
+			data.lastName = 'Last';
+		}
 		await this.adminModel.create(data);
 	}
 
