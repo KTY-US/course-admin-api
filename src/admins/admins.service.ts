@@ -136,6 +136,7 @@ export class AdminsService {
 			if (searchString !== '') {
 				admins = await this.adminModel.findAll({
 					where: {
+						role: 'admin',
 						[Op.or]: [
 							{ username: { [Op.regexp]: searchString } },
 							{ firstName: { [Op.regexp]: searchString } },
@@ -147,6 +148,7 @@ export class AdminsService {
 				});
 			} else {
 				admins = await this.adminModel.findAll({
+					where: { role: 'admin' },
 					attributes: { exclude: ['updatedAt'] },
 					order: myOrder
 				});
