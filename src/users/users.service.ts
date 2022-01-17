@@ -32,8 +32,6 @@ export class UsersService {
 	): Promise<{ users: User[]; total: number }> {
 		let myOrder = sequelize.literal('email ASC');
 
-		console.log(searchString);
-
 		if (sortMode === 'time-asc') {
 			myOrder = sequelize.literal('createdAt ASC');
 		} else if (sortMode === 'time-desc') {
@@ -47,7 +45,7 @@ export class UsersService {
 				const decodedSearch = decodeURIComponent(searchString);
 				users = await this.userModal.findAll({
 					where: {
-						$or: [{ firstName: decodedSearch }, { lastName: decodedSearch }, { email: decodedSearch }]
+						email: decodedSearch
 					},
 					attributes: { exclude: ['updatedAt'] },
 					order: myOrder

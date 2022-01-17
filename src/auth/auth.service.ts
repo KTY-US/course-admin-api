@@ -5,12 +5,14 @@ import * as bcrypt from 'bcrypt';
 
 import { Admin } from './../admins/entity/admin.entity';
 import { AuthDto } from './dtos/auth.dto';
+import { ChangePasswordDto } from './dtos/changePassword.dto';
 import { UserLoginDto } from './dtos/signin.dto';
 
 @Injectable()
 export class AuthService {
 	constructor(
 		@InjectModel(Admin)
+		private adminModel: typeof Admin,
 		private readonly jwtService: JwtService
 	) {}
 	/**
@@ -42,7 +44,7 @@ export class AuthService {
 	 */
 	async signIn(userLogin: UserLoginDto): Promise<AuthDto> {
 		const user = await Admin.findOne({
-			where: { email: userLogin.username },
+			where: { username: userLogin.username },
 			attributes: { exclude: ['createdAt', 'updatedAt'] }
 		});
 
@@ -53,7 +55,33 @@ export class AuthService {
 			username: user.username,
 			firstName: user.firstName,
 			lastName: user.lastName,
-			token
+			role: user.role,
+			token: token
 		};
+	}
+
+	/**
+	 * Đổi mật khẩu cho user
+	 * @param passwordForm
+	 * @returns
+	 */
+	async changePassword(passwordForm: ChangePasswordDto, userId: string): Promise<void> {
+		const isExistUser = await this.adminModel.findOne({ where: { id: userId } });
+
+		if (isExistUser) {
+			const isPasswordCorrect = await bcrypt.compare(passwordForm.password, isExistUser.password);
+			if (!isPasswordCorrect) {
+				throw new BadRequestException('Old password is incorrect');
+			} else {
+				if (passwordForm.newPassword === passwordForm.confirmNewPassword) {
+					const hashedPassword = bcrypt.hashSync(passwordForm.newPassword, 12);
+					await this.adminModel.update({ password: hashedPassword }, { where: { id: userId } });
+				} else {
+					throw new BadRequestException('New password not match confirm new password');
+				}
+			}
+		} else {
+			throw new BadRequestException('User does not exist.');
+		}
 	}
 }

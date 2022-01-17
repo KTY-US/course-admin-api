@@ -1,4 +1,6 @@
-import { Body, Controller, Get, Param, Put, Query, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Put, Query, UseGuards, Post } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+
 import { User } from './entity/user.entity';
 import { UsersService, ICheckExistedResult } from './users.service';
 
@@ -14,7 +16,6 @@ export class UsersController {
 		@Query('search') search: string
 	): Promise<{ users: User[]; total: number }> {
 		try {
-			console.log(search);
 			return this.usersService.getAllUsers(+page, +rowsPerPage, sortMode, search);
 		} catch (error) {
 			throw new Error(error.message);
@@ -22,6 +23,7 @@ export class UsersController {
 	}
 
 	@Get(':id')
+	@UseGuards(AuthGuard('jwt'))
 	async getUserDetails(@Param('id') userId: string): Promise<User> {
 		try {
 			return this.usersService.getUserDetail(userId);
@@ -40,6 +42,7 @@ export class UsersController {
 	}
 
 	@Put('change-code/:id')
+	@UseGuards(AuthGuard('jwt'))
 	async changeUserCode(@Param('id') userId: string, @Body('newCode') newCode: string): Promise<boolean> {
 		try {
 			return this.usersService.changeUserCode(userId, newCode);
@@ -49,6 +52,7 @@ export class UsersController {
 	}
 
 	@Put('change-lock-status/:id')
+	@UseGuards(AuthGuard('jwt'))
 	async changeUserLockStatus(@Param('id') userId: string): Promise<boolean> {
 		try {
 			return this.usersService.changeUserLockStatus(userId);

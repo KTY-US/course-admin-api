@@ -5,7 +5,7 @@ import { AppModule } from './app.module';
 import 'core-js/proposals/reflect-metadata';
 
 async function bootstrap(): Promise<void> {
-	const port = process.env.PORT || 6000;
+	const port = process.env.PORT || 5001;
 	const app = await NestFactory.create(AppModule);
 	// const allowedOrigins = [
 	// 	'http://localhost:3000',
