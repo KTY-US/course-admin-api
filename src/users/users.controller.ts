@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Put, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Put, Query, UseGuards, Post } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { User } from './entity/user.entity';
@@ -8,11 +8,15 @@ import { UsersService, ICheckExistedResult } from './users.service';
 export class UsersController {
 	constructor(private readonly usersService: UsersService) {}
 
-	@Get('all')
-	@UseGuards(AuthGuard('jwt'))
-	async getAllUsers(@Query('sortMode') sortMode: string): Promise<User[]> {
+	@Get()
+	getAllCourses(
+		@Query('page') page: string,
+		@Query('rowsPerPage') rowsPerPage: string,
+		@Query('sortMode') sortMode: string,
+		@Query('search') search: string
+	): Promise<{ users: User[]; total: number }> {
 		try {
-			return this.usersService.getAllUsers(sortMode);
+			return this.usersService.getAllUsers(+page, +rowsPerPage, sortMode, search);
 		} catch (error) {
 			throw new Error(error.message);
 		}
@@ -28,8 +32,7 @@ export class UsersController {
 		}
 	}
 
-	@Get('check-code/:id')
-	@UseGuards(AuthGuard('jwt'))
+	@Post('check-code/:id')
 	async checkExistedUserCode(@Param('id') userId: string, @Body('code') code: string): Promise<ICheckExistedResult> {
 		try {
 			return this.usersService.checkExistedUserCode(userId, code);
