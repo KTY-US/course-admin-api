@@ -42,13 +42,12 @@ export class UsersService {
 
 		try {
 			if (searchString !== '') {
-				const decodedSearch = decodeURIComponent(searchString);
 				users = await this.userModal.findAll({
 					where: {
 						[Op.or]: [
-							{ email: { [Op.like]: decodedSearch } },
-							{ firstName: { [Op.like]: decodedSearch } },
-							{ lastName: { [Op.like]: decodedSearch } }
+							{ email: { [Op.regexp]: searchString } },
+							{ firstName: { [Op.regexp]: searchString } },
+							{ lastName: { [Op.regexp]: searchString } }
 						]
 					},
 					attributes: { exclude: ['updatedAt'] },
