@@ -13,17 +13,18 @@ export class CoursesController {
 		@Query('page') page: string,
 		@Query('rowsPerPage') rowsPerPage: string,
 		@Query('accountId') accountId: string,
-		@Query('sortMode') sortMode: string
+		@Query('sortMode') sortMode: string,
+		@Query('searchString') searchString?: string
 	): Promise<{ courses: Course[]; total: number }> {
 		try {
-			return this.coursesService.getAllCourses(accountId, +page, +rowsPerPage, sortMode);
+			return this.coursesService.getAllCourses(accountId, +page, +rowsPerPage, sortMode, searchString);
 		} catch (error) {
 			throw new Error(error.message);
 		}
 	}
 
 	@Get(':id')
-	// @UseGuards(AuthGuard('jwt'))
+	@UseGuards(AuthGuard('jwt'))
 	async getCourse(@Param('id') id: string): Promise<Course> {
 		try {
 			return this.coursesService.getCourseDetail(id);
@@ -33,7 +34,7 @@ export class CoursesController {
 	}
 
 	@Delete(':id')
-	// @UseGuards(AuthGuard('jwt'))
+	@UseGuards(AuthGuard('jwt'))
 	async deleteCourse(@Param('id') id: string): Promise<void> {
 		try {
 			return this.coursesService.deleteCourse(id);
