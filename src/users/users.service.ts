@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import sequelize, { Sequelize } from 'sequelize';
+import sequelize, { Op } from 'sequelize';
 
 import { User } from './entity/user.entity';
 
@@ -45,7 +45,11 @@ export class UsersService {
 				const decodedSearch = decodeURIComponent(searchString);
 				users = await this.userModal.findAll({
 					where: {
-						email: decodedSearch
+						[Op.or]: [
+							{ email: { [Op.like]: decodedSearch } },
+							{ firstName: { [Op.like]: decodedSearch } },
+							{ lastName: { [Op.like]: decodedSearch } }
+						]
 					},
 					attributes: { exclude: ['updatedAt'] },
 					order: myOrder

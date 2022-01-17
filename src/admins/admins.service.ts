@@ -54,13 +54,13 @@ export class AdminsService {
 		let myOrder = sequelize.literal('username ASC');
 
 		if (sortMode === 'time-asc') {
-			myOrder = sequelize.literal('createAt ASC');
+			myOrder = sequelize.literal('createdAt ASC');
 		} else if (sortMode === 'time-desc') {
-			myOrder = sequelize.literal('createAt DESC');
+			myOrder = sequelize.literal('createdAt DESC');
 		}
 
 		const accounts = this.adminModel.findAll({
-			attributes: { exclude: ['updateAt'] },
+			attributes: { exclude: ['updatedAt'] },
 			order: myOrder
 		});
 		return accounts;
@@ -77,7 +77,7 @@ export class AdminsService {
 	async getAdminAccountDetail(accountId: string): Promise<Admin> {
 		const account = await this.adminModel.findOne({
 			where: { id: accountId },
-			attributes: { exclude: ['updateAt'] }
+			attributes: { exclude: ['updatedAt'] }
 		});
 
 		if (account) return account;
@@ -97,6 +97,20 @@ export class AdminsService {
 			else {
 				return false;
 			}
+		}
+		throw new NotFoundException('Admin account does not exist!');
+	}
+
+	/**
+	 * Kiểm tra tài khoản là manager
+	 * @param accountId
+	 * @returns
+	 */
+	async checkIsAdmin(accountId: string): Promise<boolean> {
+		const account = await this.adminModel.findOne({ where: { id: accountId } });
+
+		if (account) {
+			return true;
 		}
 		throw new NotFoundException('Admin account does not exist!');
 	}
