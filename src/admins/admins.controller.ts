@@ -34,15 +34,6 @@ export class AdminsController {
 		}
 	}
 
-	@Post('check-code/:id')
-	async checkExistedUserCode(@Param('id') userId: string, @Body('code') code: string): Promise<ICheckExistedResult> {
-		try {
-			return this.usersService.checkExistedUserCode(userId, code);
-		} catch (error) {
-			throw new Error(error.message);
-		}
-	}
-
 	@Get('check-username')
 	@UseGuards(AuthGuard('jwt'))
 	async checkUsername(@Req() req: Request): Promise<boolean> {

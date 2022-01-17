@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import sequelize from 'sequelize';
+import sequelize, { Op } from 'sequelize';
+
 import * as bcrypt from 'bcrypt';
 
 import { AdminCreateDto } from './dtos/admin-create.dto';
@@ -49,8 +50,6 @@ export class AdminsService {
 	 * @returns
 	 */
 	async getAllAdminAccounts(accountId: string, sortMode?: string): Promise<Admin[]> {
-		// const check = this.checkManager(accountId);
-		// if (check) {
 		let myOrder = sequelize.literal('username ASC');
 
 		if (sortMode === 'time-asc') {
@@ -64,9 +63,6 @@ export class AdminsService {
 			order: myOrder
 		});
 		return accounts;
-		// } else {
-		// 	throw new BadRequestException('Do not have permission!');
-		// }
 	}
 
 	/**
@@ -113,5 +109,67 @@ export class AdminsService {
 			return true;
 		}
 		throw new NotFoundException('Admin account does not exist!');
+	}
+
+	/**
+	 * Hàm lấy danh sách admin
+	 * @param sortMode
+	 * @returns
+	 */
+	async getAllAdmins(
+		page: number,
+		rowsPerPage: number,
+		sortMode?: string,
+		searchString?: string
+	): Promise<{ admins: Admin[]; total: number }> {
+		let myOrder = sequelize.literal('username ASC');
+
+		if (sortMode === 'time-asc') {
+			myOrder = sequelize.literal('createdAt ASC');
+		} else if (sortMode === 'time-desc') {
+			myOrder = sequelize.literal('createdAt DESC');
+		}
+
+		let admins: Admin[];
+
+		try {
+			if (searchString !== '') {
+				admins = await this.adminModel.findAll({
+					where: {
+						[Op.or]: [
+							{ username: { [Op.regexp]: searchString } },
+							{ firstName: { [Op.regexp]: searchString } },
+							{ lastName: { [Op.regexp]: searchString } }
+						]
+					},
+					attributes: { exclude: ['updatedAt'] },
+					order: myOrder
+				});
+			} else {
+				admins = await this.adminModel.findAll({
+					attributes: { exclude: ['updatedAt'] },
+					order: myOrder
+				});
+			}
+		} catch {
+			admins = [];
+		}
+
+		const total = admins.length;
+		const startIndex = (page - 1) * rowsPerPage;
+		if (startIndex < total && rowsPerPage > 0) {
+			admins = admins.slice((page - 1) * rowsPerPage, page * rowsPerPage);
+		}
+
+		return { admins, total };
+	}
+
+	/**
+	 * Hàm lấy thông tin chi tiết một admin
+	 * @param userId
+	 * @returns
+	 */
+	async getAdminDetail(userId: string): Promise<Admin> {
+		return await this.adminModel.findOne({ where: { id: userId }, attributes: { exclude: ['updatedAt'] } });
 	}
 }
