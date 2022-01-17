@@ -45,7 +45,11 @@ export class UsersService {
 				const decodedSearch = decodeURIComponent(searchString);
 				users = await this.userModal.findAll({
 					where: {
-						[Op.or]: [{ email: decodedSearch }, { firstName: decodedSearch }, { lastName: decodedSearch }]
+						[Op.or]: [
+							{ email: { [Op.like]: decodedSearch } },
+							{ firstName: { [Op.like]: decodedSearch } },
+							{ lastName: { [Op.like]: decodedSearch } }
+						]
 					},
 					attributes: { exclude: ['updatedAt'] },
 					order: myOrder
