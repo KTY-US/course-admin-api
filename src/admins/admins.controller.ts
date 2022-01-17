@@ -10,24 +10,34 @@ import { AdminsService } from './admins.service';
 export class AdminsController {
 	constructor(private readonly adminsService: AdminsService) {}
 
-	@Get('all/:accountId')
-	@UseGuards(AuthGuard('jwt'))
-	async getAllAdminAccounts(
-		@Param('accountId') accountId: string,
-		@Query('sortMode') sortMode?: string
-	): Promise<Admin[]> {
+	@Get()
+	getAllCourses(
+		@Query('page') page: string,
+		@Query('rowsPerPage') rowsPerPage: string,
+		@Query('sortMode') sortMode: string,
+		@Query('search') search: string
+	): Promise<{ admins: Admin[]; total: number }> {
 		try {
-			return this.adminsService.getAllAdminAccounts(accountId, sortMode);
+			return this.adminsService.getAllAdmins(+page, +rowsPerPage, sortMode, search);
 		} catch (error) {
 			throw new Error(error.message);
 		}
 	}
 
-	@Get('account-detail/:accountId')
+	@Get(':id')
 	@UseGuards(AuthGuard('jwt'))
-	async getAdminAccountDetail(@Param('accountId') accountId: string): Promise<Admin> {
+	async getUserDetails(@Param('id') userId: string): Promise<Admin> {
 		try {
-			return this.adminsService.getAdminAccountDetail(accountId);
+			return this.adminsService.getAdminDetail(userId);
+		} catch (error) {
+			throw new Error(error.message);
+		}
+	}
+
+	@Post('check-code/:id')
+	async checkExistedUserCode(@Param('id') userId: string, @Body('code') code: string): Promise<ICheckExistedResult> {
+		try {
+			return this.usersService.checkExistedUserCode(userId, code);
 		} catch (error) {
 			throw new Error(error.message);
 		}
