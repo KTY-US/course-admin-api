@@ -8,7 +8,7 @@ import { AuthService } from './../auth/auth.service';
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
 	constructor(private authService: AuthService) {
-		super({ usernameField: 'username' });
+		super();
 	}
 
 	async validate(username: string, password: string): Promise<Admin | boolean> {
@@ -16,7 +16,6 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
 		if (!user) {
 			throw new BadRequestException('Password is incorrect!');
 		}
-
 		return user;
 	}
 }

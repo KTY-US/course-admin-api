@@ -24,14 +24,12 @@ export class CoursesService {
 		accountId: string,
 		page: number,
 		rowsPerPage: number,
-		sortMode?: string
+		sortMode: string
 	): Promise<{ courses: Course[]; total: number }> {
-		let myOrder = sequelize.literal('courseName ASC');
+		let myOrder = sequelize.literal('createdAt DESC');
 
 		if (sortMode === 'time-asc') {
 			myOrder = sequelize.literal('createdAt ASC');
-		} else if (sortMode === 'time-desc') {
-			myOrder = sequelize.literal('createdAt DESC');
 		}
 
 		let courses = await this.courseModel.findAll({

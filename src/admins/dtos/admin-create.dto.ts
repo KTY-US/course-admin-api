@@ -1,6 +1,5 @@
 import { REGEX, MESSAGES } from './../../utils/app.utils';
-import { IsEnum, IsNotEmpty, Length, Matches } from 'class-validator';
-import { ENUM } from 'sequelize';
+import { IsNotEmpty, Length, Matches } from 'class-validator';
 
 export class AdminCreateDto {
 	@IsNotEmpty()
@@ -8,10 +7,10 @@ export class AdminCreateDto {
 	@Matches(REGEX.USERNAME_RULE, { message: MESSAGES.USERNAME_RULE_MESSAGE })
 	username: string;
 
-	@IsNotEmpty()
-	@IsEnum(ENUM('admin', 'manager'))
-	role: string;
+	// @IsNotEmpty()
+	// @IsEnum(ENUM('admin', 'manager'))
+	// role: string;
 
-	fullName: string;
+	firstName: string;
 	lastName: string;
 }

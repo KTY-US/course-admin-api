@@ -13,7 +13,7 @@ export class CoursesController {
 		@Query('page') page: string,
 		@Query('rowsPerPage') rowsPerPage: string,
 		@Query('accountId') accountId: string,
-		@Query('sortMode') sortMode?: string
+		@Query('sortMode') sortMode: string
 	): Promise<{ courses: Course[]; total: number }> {
 		try {
 			return this.coursesService.getAllCourses(accountId, +page, +rowsPerPage, sortMode);
