@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize';
 import { Column, Model, Table, HasMany } from 'sequelize-typescript';
+import { Expose } from 'class-transformer';
 
 import { Course } from 'src/courses/entity/course.entity';
 
@@ -51,4 +52,9 @@ export class User extends Model {
 
 	@HasMany(() => Course)
 	courses: Course[];
+
+	@Expose()
+	get fullName(): string {
+		return `${this.firstName} ${this.lastName}`;
+	}
 }

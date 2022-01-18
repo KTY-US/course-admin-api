@@ -1,7 +1,7 @@
 import { User } from './../users/entity/user.entity';
 import { InjectModel } from '@nestjs/sequelize';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import sequelize from 'sequelize';
+import sequelize, { Op } from 'sequelize';
 
 import { Course } from './entity/course.entity';
 
@@ -24,27 +24,49 @@ export class CoursesService {
 		accountId: string,
 		page: number,
 		rowsPerPage: number,
-		sortMode: string
+		sortMode: string,
+		searchString?: string
 	): Promise<{ courses: Course[]; total: number }> {
 		let myOrder = sequelize.literal('createdAt DESC');
 
 		if (sortMode === 'time-asc') {
 			myOrder = sequelize.literal('createdAt ASC');
 		}
-
-		let courses = await this.courseModel.findAll({
-			include: [
-				{
-					model: User,
-					as: 'owner',
-					attributes: {
-						exclude: ['userCode', 'password', 'status', 'createdAt', 'updatedAt']
-					}
-				}
-			],
-			attributes: { exclude: ['imagePath', 'updatedAt'] },
-			order: myOrder
-		});
+		let courses: Course[] = [];
+		try {
+			if (searchString && searchString !== '') {
+				courses = await this.courseModel.findAll({
+					include: [
+						{
+							model: User,
+							as: 'owner',
+							attributes: {
+								exclude: ['userCode', 'password', 'status', 'createdAt', 'updatedAt']
+							}
+						}
+					],
+					where: {
+						courseName: { [Op.regexp]: searchString }
+					},
+					attributes: { exclude: ['imagePath', 'updatedAt'] },
+					order: myOrder
+				});
+			} else {
+				courses = await this.courseModel.findAll({
+					include: [
+						{
+							model: User,
+							as: 'owner',
+							attributes: {
+								exclude: ['userCode', 'password', 'status', 'createdAt', 'updatedAt']
+							}
+						}
+					],
+					attributes: { exclude: ['imagePath', 'updatedAt'] },
+					order: myOrder
+				});
+			}
+		} catch {}
 
 		const total = courses.length;
 		const startIndex = (page - 1) * rowsPerPage;
@@ -64,16 +86,6 @@ export class CoursesService {
 		const course = await this.courseModel.findOne({
 			where: { id: courseId },
 			include: [
-				// {
-				// 	model: User,
-				// 	as: 'participants',
-				// 	through: {
-				// 		attributes: ['userId', 'role', 'status']
-				// 	},
-				// 	attributes: {
-				// 		exclude: ['password', 'status', 'createdAt', 'updatedAt']
-				// 	}
-				// },
 				{
 					model: User,
 					as: 'owner',
