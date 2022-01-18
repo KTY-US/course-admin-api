@@ -7,7 +7,7 @@ import 'core-js/proposals/reflect-metadata';
 async function bootstrap(): Promise<void> {
 	const port = process.env.PORT || 5001;
 	const app = await NestFactory.create(AppModule);
-	const allowedOrigins = ['http://localhost:3000', 'https://course-admin-app.netlify.app'];
+	const allowedOrigins = ['http://localhost:4000', 'https://course-admin-app.netlify.app'];
 	app.enableCors({
 		origin: function (origin, callback) {
 			// allow requests with no origin
