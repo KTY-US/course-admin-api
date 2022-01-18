@@ -5,6 +5,7 @@ import { Request } from 'express';
 import { AdminCreateDto } from './dtos/admin-create.dto';
 import { Admin } from './entity/admin.entity';
 import { AdminsService } from './admins.service';
+import { ManagerCreateDto } from './dtos/manager-create.dto';
 
 @Controller('admins')
 export class AdminsController {
@@ -51,6 +52,16 @@ export class AdminsController {
 	async createNewAdminAccount(@Body() data: AdminCreateDto): Promise<void> {
 		try {
 			return this.adminsService.createAdminAccount(data);
+		} catch (error) {
+			throw new Error(error.message);
+		}
+	}
+
+	@Post('create-a-manager')
+	@UsePipes(ValidationPipe)
+	async createNewManagerAccount(@Body() data: ManagerCreateDto): Promise<void> {
+		try {
+			return this.adminsService.createManagerAccount(data);
 		} catch (error) {
 			throw new Error(error.message);
 		}

@@ -6,6 +6,7 @@ import * as bcrypt from 'bcrypt';
 
 import { AdminCreateDto } from './dtos/admin-create.dto';
 import { Admin } from './entity/admin.entity';
+import { ManagerCreateDto } from './dtos/manager-create.dto';
 
 @Injectable()
 export class AdminsService {
@@ -15,24 +16,57 @@ export class AdminsService {
 	) {}
 
 	/**
+	 * Hàm tạo tài khoản manager
+	 * @param data
+	 */
+	async createManagerAccount(data: ManagerCreateDto): Promise<void> {
+		const admin = await this.adminModel.findOne({ where: { username: data.username } });
+		const manager = await this.adminModel.findOne({ where: { role: 'manager' } });
+		if (!admin && manager) {
+			if (data.firstName.length === 0) {
+				data.firstName = 'Admin';
+			}
+			if (data.lastName.length === 0) {
+				data.lastName = 'Manager';
+			}
+			const hashedPassword = bcrypt.hashSync(data.password, 12);
+
+			await this.adminModel.create({
+				username: data.username,
+				firstName: data.firstName,
+				lastName: data.lastName,
+				password: hashedPassword,
+				role: 'manager'
+			});
+		} else {
+			throw new BadRequestException('Manager has been created!');
+		}
+	}
+
+	/**
 	 * Hàm tạo tài khoản admin
 	 * @param data
 	 */
 	async createAdminAccount(data: AdminCreateDto): Promise<void> {
-		if (data.firstName.length === 0) {
-			data.firstName = 'Admin';
-		}
-		if (data.lastName.length === 0) {
-			data.lastName = 'Last';
-		}
-		const hashedPassword = bcrypt.hashSync('Pass@12345', 12);
+		const admin = await this.adminModel.findOne({ where: { username: data.username } });
+		if (!admin) {
+			if (data.firstName.length === 0) {
+				data.firstName = 'Admin';
+			}
+			if (data.lastName.length === 0) {
+				data.lastName = 'Last';
+			}
+			const hashedPassword = bcrypt.hashSync('Pass@12345', 12);
 
-		await this.adminModel.create({
-			username: data.username,
-			firstName: data.firstName,
-			lastName: data.lastName,
-			password: hashedPassword
-		});
+			await this.adminModel.create({
+				username: data.username,
+				firstName: data.firstName,
+				lastName: data.lastName,
+				password: hashedPassword
+			});
+		} else {
+			throw new BadRequestException('Admin has been created!');
+		}
 	}
 
 	async checkExistedUsername(username: string): Promise<boolean> {
