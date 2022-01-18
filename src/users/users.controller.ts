@@ -55,7 +55,7 @@ export class UsersController {
 	@UseGuards(AuthGuard('jwt'))
 	async changeUserLockStatus(@Param('id') userId: string): Promise<boolean> {
 		try {
-			return this.usersService.changeUserLockStatus(userId);
+			return await this.usersService.changeUserLockStatus(userId);
 		} catch (error) {
 			throw new Error(error.message);
 		}
